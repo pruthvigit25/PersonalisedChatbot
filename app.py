@@ -44,7 +44,7 @@ def fetch_age(username):
 def askOpenai(age, message,storedUsername):
     prompt  = message + ".Respond as if you are telling to a "+age+"years old "
 
-    openai.api_key = "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"
+    openai.api_key = "Insert API Keys"
     prompt = prompt
     response = openai.Completion.create(
         engine="text-davinci-003",  
@@ -99,7 +99,7 @@ def suggestion():
 
     print(prompt)
 
-    openai.api_key = "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"
+    openai.api_key = "Insert API Keys"
     prompt = prompt
     response = openai.Completion.create(
         engine="text-davinci-003",  
