@@ -2,7 +2,7 @@
 
 ## Step 1 
 
-Install the requirements by installing the packages in requirement.txt file using the below command
+Open Terminal and install the requirements by installing the packages in requirement.txt file using the below command
 
 pip install -r requirements.txt
 
@@ -29,6 +29,8 @@ Set up MySQL Database with required Table and column names. Below is the schema 
 ## Step 5 
 
 Open signin.html page to open the frontend of the system.
+
+Note: Please insert your own OpenAI API Keys in app.py file.
 
 
 
