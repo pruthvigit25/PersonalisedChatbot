@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Learning Reflection Survey</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    
+    body, h1, h2, h3, p, ul, li {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f9fc;
+    }
+
+    
+    #chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #chat-header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+
+    
+    .survey-question {
+      margin-bottom: 20px;
+      padding: 20px;
+    }
+
+    .survey-question label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .survey-answer {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+      font-size: 14px;
+    }
+
+    
+    #user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+    }
+
+    #username {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    #signout-button {
+      background-color: #d9534f;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    #submit-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    font-size: 16px;
+    margin: 20px auto;
+    display: block;
+    transition: background-color 0.3s ease;
+  }
+
+  #submit-button:hover {
+    background-color: #45a049;
+  }
+
+    #signout-button:hover {
+      background-color: #c9302c;
+    }
+  </style>  
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-header">Learning Reflections</div>
+    <div id="user-info">
+      <span id="username"></span>
+      <button id="signout-button">Sign Out</button>
+    </div>
+
+    <form id="survey-form">
+      <div id="survey-container">
+        <div class="survey-question">
+          <label>1. What do you remember about what you learned today? Write down as many things as you can in 60 seconds.</label>
+          <textarea class="survey-answer" rows="4" required></textarea>
+        </div>
+        <div class="survey-question">
+          <label>2. What is the most interesting thing that you have learned in today's session? Write down 3-5 things in bullet-point format.</label>
+          <textarea class="survey-answer" rows="4" required></textarea>
+        </div>
+        <div class="survey-question">
+          <label>3. What was your role in the learning process today?</label>
+          <textarea class="survey-answer" rows="4" required></textarea>
+        </div>
+        <div class="survey-question">
+          <label>4. Were you an active or a passive learner? Did the learning activity allow (or force) you to be one or the other (active versus passive)?</label>
+          <textarea class="survey-answer" rows="4" required></textarea>
+        </div>
+        <div class="survey-question">
+          <label>5. What was your mindset before, during and after the lesson?</label>
+          <textarea class="survey-answer" rows="4" required></textarea>
+        </div>
+      </div>
+      <p id="success-message" style="color: #4CAF50; margin-top: 10px;"></p>
+      <button id="submit-button">Submit</button>
+    </form>
+
+
+  </div>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+  const submitButton = document.getElementById("submit-button");
+  const storedUsername = localStorage.getItem('username');
+  const usernameElement = document.getElementById('username');
+  usernameElement.textContent = "Hello, " + storedUsername;
+
+  const signoutButton = document.getElementById('signout-button');
+  const successMessage = document.getElementById("success-message");
+
+  signoutButton.addEventListener('click', () => {
+    
+    window.location.href = 'signin.html';
+  });
+
+  submitButton.addEventListener("click", function () {
+    const surveyAnswers = {
+      username: storedUsername,
+      answer1: document.querySelector(".survey-question:nth-child(1) .survey-answer").value,
+      answer2: document.querySelector(".survey-question:nth-child(2) .survey-answer").value,
+      answer3: document.querySelector(".survey-question:nth-child(3) .survey-answer").value,
+      answer4: document.querySelector(".survey-question:nth-child(4) .survey-answer").value,
+      answer5: document.querySelector(".survey-question:nth-child(5) .survey-answer").value,
+    };
+
+    
+    if (Object.values(surveyAnswers).some(answer => answer.trim() === '')) {
+      return;
+              
+    }
+
+    alert("You have successfully submitted your answers.")
+
+    
+    fetch("http://127.0.0.1:5000/getreflectionanswers", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(surveyAnswers),
+    })
+      .then(response => response.json())
+      .then(data => {
+        
+        console.log(data);
+
+
+
+        
+        document.querySelectorAll(".survey-answer").forEach(textarea => {
+          textarea.value = "";
+
+
+        });
+      })
+      .catch(error => {
+        console.error("Error sending data to the API:", error);
+      });
+  });
+});
+
+
+  </script>
+  
+
+</body>
+</html>

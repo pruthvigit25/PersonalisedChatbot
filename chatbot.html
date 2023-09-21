@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chatbot UI</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    
+    body, h1, h2, h3, p, ul, li {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f7f9fc;
+    }
+
+    
+    #chat-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #chat-header {
+      background-color: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+      border-bottom: 1px solid #ddd;
+    }
+
+    #chatbox {
+      max-height: 500px;
+      overflow-y: scroll;
+      padding: 20px;
+    }
+
+    
+    .message {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.bubble {
+  background-color: #f0f0f0;
+  padding: 10px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.4;
+  max-width: 70%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+    .user-message {
+  justify-content: flex-end;
+}
+
+.bot-message {
+  justify-content: flex-start;
+}
+
+.user-message .bubble {
+  background-color: #dcf8c6;
+  margin-left: 10px;
+}
+
+.bot-message .bubble {
+  background-color: #a1d7fe;
+  margin-right: 10px;
+}
+
+    
+    #input-container {
+      display: flex;
+      background-color: #fff;
+      padding: 10px;
+    }
+
+    #user-input {
+      flex-grow: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 5px;
+      margin-right: 10px;
+      font-size: 14px;
+    }
+
+    #send-button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 8px 15px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    #send-button:hover {
+      background-color: #45a049;
+    }
+
+  
+    .suggestion-container {
+  margin-top: 10px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+}
+
+.suggestion {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 15px;
+  background-color: #e0e0e0;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.suggestion:hover {
+  background-color: #c0c0c0;
+}
+
+  
+    #user-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #f0f0f0;
+    }
+
+    #username {
+      font-weight: bold;
+      margin-right: 10px;
+    }
+
+    #signout-button {
+      background-color: #d9534f;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      padding: 5px 10px;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    #signout-button:hover {
+      background-color: #c9302c;
+    }
+  </style>
+</head>
+<body>
+  <div id="chat-container">
+    <div id="chat-header">Space Guru 🚀</div>
+    <div id="user-info">
+      <span id="username"></span>
+      <button id="signout-button">End Chat</button>
+    </div>
+    <div id="chatbox">
+      
+      <div class="message bot-message">
+        <div class="bubble">
+          Greetings, I'm Space Guru! Your guide to the cosmos. Questions about space? Ask me anything!🔭</div>
+      </div>
+      
+      <div class="message user-message"></div>
+    </div>
+    <div id="input-container">
+      <input type="text" id="user-input" placeholder="Type your message...">
+      <button id="send-button">Send</button>
+    </div>
+    <div id="suggestion-container"></div>
+  </div>
+
+  <script>
+    const chatbox = document.getElementById('chatbox');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const suggestionContainer = document.getElementById('suggestion-container');
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const username = urlParams.get('username');
+    const userButton = document.getElementById('signout-button');
+    const storedUsername = localStorage.getItem('username');
+    const usernameElement = document.getElementById('username');
+    usernameElement.textContent = "Hello, "+storedUsername;
+    userButton.addEventListener('click', () => {
+      
+      window.location.href = 'reflections.html'; 
+    });
+
+    function appendUserMessage(message) {
+      const userMessageElement = document.createElement('div');
+      userMessageElement.classList.add('message', 'user-message');
+      const bubbleElement = document.createElement('div');
+      bubbleElement.classList.add('bubble');
+      bubbleElement.textContent = message;
+      userMessageElement.appendChild(bubbleElement);
+      chatbox.appendChild(userMessageElement);
+    }
+
+    function appendBotMessage(message) {
+      const botMessageElement = document.createElement('div');
+      botMessageElement.classList.add('message', 'bot-message');
+      const bubbleElement = document.createElement('div');
+      bubbleElement.classList.add('bubble');
+      bubbleElement.textContent = message;
+      botMessageElement.appendChild(bubbleElement);
+      chatbox.appendChild(botMessageElement);
+    }
+
+    function handleUserInput() {
+  const message = userInput.value.trim();
+  var answer = null;
+  if (message !== '') {
+    appendUserMessage(message);
+    const url = `http://127.0.0.1:5000/callapi?message=${encodeURIComponent(
+      message
+    )}&storedUsername=${encodeURIComponent(storedUsername)}`; 
+    const suggestion = `http://127.0.0.1:5000/suggestions?message=${encodeURIComponent(message)}&storedUsername=${encodeURIComponent(storedUsername)}`;
+
+    fetch(url)
+      .then((response) => response.text())
+      .then((data) => {
+        answer = data
+        appendBotMessage(data);
+        fetch(suggestion)
+          .then((response) => response.json())
+          .then((data) => {
+            if (answer != "Please ask Questions related to Space!")
+            {
+              const suggestions = Object.values(data).slice(0);
+              showSuggestions(suggestions);
+            }
+            console.log(data);
+          })
+          .catch((error) => {
+            console.log('Error:', error);
+          });
+      })
+      .catch((error) => {
+        console.log('Error:', error);
+      });
+      userInput.value = '';
+
+  }
+}
+    function showSuggestions(suggestions) {
+      suggestionContainer.innerHTML = '';
+      suggestions.forEach((suggestion) => {
+        const suggestionElement = document.createElement('span');
+        suggestionElement.classList.add('suggestion');
+        suggestionElement.textContent = suggestion;
+        suggestionElement.addEventListener('click', () => {
+          userInput.value = suggestion;
+        });
+        suggestionContainer.appendChild(suggestionElement);
+      });
+    }
+
+    sendButton.addEventListener('click', handleUserInput);
+    userInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        handleUserInput();
+        userInput.value = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
