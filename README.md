@@ -24,9 +24,12 @@ flask run
 
 Set up MySQL Database with required Table and column names. Below is the schema of the Database.
 
+![Database Schema](DBSchema.png)
+
 ## Step 5 
 
 Open signin.html page to open the frontend of the system.
+
 
 
 
